@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import org.xutils.common.util.DensityUtil
 
 /**
@@ -161,12 +160,11 @@ class CalligraphyTextView : View {
         val tW = oneTextSize + gridHorSpace
         val column = (if ((viewWidth % tW).toInt() == 0) viewWidth / tW else (viewWidth / tW)).toInt()
         val row = (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
-        Log.d("CalligraphyTextView", "ZLog onDraw col:$column row:$row length:${text.length} text:$text")
         for (x in 0 until row) {
             for (y in 0 until column) {
-                val index = x * row + y
+                val index = x * column + y
                 if (index >= text.length) return
-                drawOneText(text[x * column + y], y, x, canvas)
+                drawOneText(text[index], y, x, canvas)
             }
         }
     }
