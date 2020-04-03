@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CalligraphyTextView">
+        <attr name="android:layout_marginStart" />
+        <attr name="android:layout_marginTop" />
+        <attr name="android:text" />
+        <attr name="android:textSize" />
+        <attr name="android:textColor" />
+        <attr name="android:padding" />
+        <attr name="gridLineWidth" format="dimension" />
+        <attr name="gridSlashWidth" format="dimension" />
+        <attr name="gridSlashImgLine" format="boolean" />
+        <attr name="gridColor" format="color" />
+        <attr name="gridHorSpace" format="dimension" />
+        <attr name="gridVerSpace" format="dimension" />
+    </declare-styleable>
+</resources>
