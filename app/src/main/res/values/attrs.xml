@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CalligraphyTextView">
-        <attr name="android:layout_marginStart" />
-        <attr name="android:layout_marginTop" />
         <attr name="android:text" />
         <attr name="android:textSize" />
         <attr name="android:textColor" />
         <attr name="android:padding" />
+        <attr name="android:layout_margin" />
         <attr name="gridLineWidth" format="dimension" />
         <attr name="gridSlashWidth" format="dimension" />
-        <attr name="gridSlashImgLine" format="boolean" />
+        <attr name="gridBgStyle" format="enum">
+            <enum name="matts" value="0" />
+            <enum name="mizi" value="1" />
+        </attr>
         <attr name="gridColor" format="color" />
         <attr name="gridHorSpace" format="dimension" />
         <attr name="gridVerSpace" format="dimension" />
+        <attr name="textFontType" format="enum">
+            <enum name="kaiti" value="0" />
+            <enum name="kaiti_1" value="1" />
+            <enum name="mircorsoft_kaiti" value="2" />
+            <enum name="ruiyunxingkai" value="3" />
+            <enum name="xingkai" value="4" />
+            <enum name="yuhongling_xingkai" value="5" />
+        </attr>
     </declare-styleable>
 </resources>
