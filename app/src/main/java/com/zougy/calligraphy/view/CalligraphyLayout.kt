@@ -1,4 +1,4 @@
-package com.zougy.calligraphy
+package com.zougy.calligraphy.view
 
 import android.content.Context
 import android.graphics.*
@@ -6,6 +6,8 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import com.zougy.calligraphy.R
+import com.zougy.calligraphy.view.CalligraphyLayout.GridBgStyle.fontTypes
 import org.xutils.common.util.DensityUtil
 
 /**
@@ -14,7 +16,7 @@ import org.xutils.common.util.DensityUtil
  * Date:04/03 0003<br>
  * Email:441008824@qq.com
  */
-class CalligraphyTextView : View {
+class CalligraphyLayout : View {
 
     /**
      * 网格边框画笔
@@ -87,15 +89,6 @@ class CalligraphyTextView : View {
      */
     private var fontType = 0
 
-    private val fontTypes = arrayOf(
-        "kaiti.TTF",
-        "kaiti_1.TTF",
-        "mircorsoft_kaiti.TTF",
-        "ruiyunxingkai.TTF",
-        "xingkai.TTF",
-        "yuhongling_xingkai.TTF"
-    )
-
     /**
      * 屏幕宽度
      */
@@ -132,43 +125,43 @@ class CalligraphyTextView : View {
         styleId
     ) {
         if (attrs != null) {
-            val typeArray = context.obtainStyledAttributes(attrs, R.styleable.CalligraphyTextView)
+            val typeArray = context.obtainStyledAttributes(attrs, R.styleable.CalligraphyLayout)
             gridLineWidth =
-                typeArray.getDimension(R.styleable.CalligraphyTextView_gridLineWidth, 2f)
+                typeArray.getDimension(R.styleable.CalligraphyLayout_gridLineWidth, 2f)
             gridSlashWidth =
-                typeArray.getDimension(R.styleable.CalligraphyTextView_gridSlashWidth, 2f)
+                typeArray.getDimension(R.styleable.CalligraphyLayout_gridSlashWidth, 2f)
             gridBgStyle =
                 typeArray.getInt(
-                    R.styleable.CalligraphyTextView_gridBgStyle,
+                    R.styleable.CalligraphyLayout_gridBgStyle,
                     GridBgStyle.MATTS
                 )
-            gridColor = typeArray.getColor(R.styleable.CalligraphyTextView_gridColor, Color.RED)
+            gridColor = typeArray.getColor(R.styleable.CalligraphyLayout_gridColor, Color.RED)
             gridHorSpace = typeArray.getDimension(
-                R.styleable.CalligraphyTextView_gridHorSpace,
+                R.styleable.CalligraphyLayout_gridHorSpace,
                 DensityUtil.dip2px(5f).toFloat()
             ).toInt()
             gridVerSpace = typeArray.getDimension(
-                R.styleable.CalligraphyTextView_gridVerSpace,
+                R.styleable.CalligraphyLayout_gridVerSpace,
                 DensityUtil.dip2px(5f).toFloat()
             ).toInt()
-            text = typeArray.getString(R.styleable.CalligraphyTextView_android_text).toString()
+            text = typeArray.getString(R.styleable.CalligraphyLayout_android_text).toString()
             textColor =
-                typeArray.getColor(R.styleable.CalligraphyTextView_android_textColor, Color.BLACK)
+                typeArray.getColor(R.styleable.CalligraphyLayout_android_textColor, Color.BLACK)
             textSize = typeArray.getDimension(
-                R.styleable.CalligraphyTextView_android_textSize,
+                R.styleable.CalligraphyLayout_android_textSize,
                 DensityUtil.dip2px(20f).toFloat()
             )
             textPadding = typeArray.getDimension(
-                R.styleable.CalligraphyTextView_android_padding,
+                R.styleable.CalligraphyLayout_android_padding,
                 0f
             ).toInt()
             margin =
                 typeArray.getDimension(
-                    R.styleable.CalligraphyTextView_android_layout_margin,
+                    R.styleable.CalligraphyLayout_android_layout_margin,
                     0f
                 ).toInt()
-            enableGrid = typeArray.getBoolean(R.styleable.CalligraphyTextView_enableGridBackground, true)
-            fontType = typeArray.getInt(R.styleable.CalligraphyTextView_textFontType, 0)
+            enableGrid = typeArray.getBoolean(R.styleable.CalligraphyLayout_enableGridBackground, true)
+            fontType = typeArray.getInt(R.styleable.CalligraphyLayout_textFontType, 0)
             typeArray.recycle()
         }
 
@@ -314,5 +307,15 @@ class CalligraphyTextView : View {
          * 米字格
          */
         const val MIZI = 1
+
+
+        val fontTypes = arrayOf(
+            "kaiti.TTF",
+            "kaiti_1.TTF",
+            "mircorsoft_kaiti.TTF",
+            "ruiyunxingkai.TTF",
+            "xingkai.TTF",
+            "yuhongling_xingkai.TTF"
+        )
     }
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CalligraphyTextView">
+    <declare-styleable name="CalligraphyLayout">
         <attr name="android:text" />
         <attr name="android:textSize" />
         <attr name="android:textColor" />
         <attr name="android:padding" />
         <attr name="android:layout_margin" />
+
         <attr name="gridLineWidth" format="dimension" />
         <attr name="gridSlashWidth" format="dimension" />
         <attr name="gridBgStyle" format="enum">
@@ -23,6 +24,21 @@
             <enum name="xingkai" value="4" />
             <enum name="yuhongling_xingkai" value="5" />
         </attr>
-        <attr name="enableGridBackground" format="boolean"/>
+        <attr name="enableGridBackground" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="CalligraphyView">
+        <attr name="android:text" />
+        <attr name="android:textSize" />
+        <attr name="android:textColor" />
+        <attr name="android:padding" />
+        <attr name="android:layout_margin" />
+
+        <attr name="gridLineWidth" />
+        <attr name="gridSlashWidth" />
+        <attr name="gridBgStyle" />
+        <attr name="gridColor" />
+        <attr name="textFontType" />
+        <attr name="enableGridBackground" />
     </declare-styleable>
 </resources>
