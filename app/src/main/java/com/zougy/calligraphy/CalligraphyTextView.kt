@@ -5,9 +5,7 @@ import android.graphics.*
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import android.widget.Scroller
 import org.xutils.common.util.DensityUtil
 
 /**
@@ -118,6 +116,11 @@ class CalligraphyTextView : View {
      */
     private var oneTextSize = 0f
 
+    /**
+     * 是否绘制背景框
+     */
+    private var enableGrid = true
+
 
     constructor(context: Context) : this(context, null)
 
@@ -164,6 +167,7 @@ class CalligraphyTextView : View {
                     R.styleable.CalligraphyTextView_android_layout_margin,
                     0f
                 ).toInt()
+            enableGrid = typeArray.getBoolean(R.styleable.CalligraphyTextView_enableGridBackground, true)
             fontType = typeArray.getInt(R.styleable.CalligraphyTextView_textFontType, 0)
             typeArray.recycle()
         }
@@ -186,7 +190,10 @@ class CalligraphyTextView : View {
 
     fun setText(text: String) {
         this.text = text
-        measure(MeasureSpec.makeMeasureSpec(viewWidth, MeasureSpec.getMode(widthMode)), 0)
+        val layoutP = layoutParams
+        layoutP.width = width
+        layoutP.height = getTextHeight(width)
+        layoutParams = layoutP
         invalidate()
     }
 
@@ -196,31 +203,29 @@ class CalligraphyTextView : View {
         viewHeight = h
     }
 
-    var widthMode = 0
+    private var widthMode = 0
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        Log.d("CalligraphyTextView", "ZLog onMeasure :")
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         if (TextUtils.isEmpty(text)) return
         widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val hSpec = MeasureSpec.makeMeasureSpec(getTextHeight(MeasureSpec.getSize(widthMeasureSpec)), MeasureSpec.EXACTLY)
+        super.onMeasure(widthMeasureSpec, hSpec)
+    }
+
+    private fun getTextHeight(width: Int): Int {
         val oneHeight =
             (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2
         val oneSize =
             (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(oneHeight)
-        val w = MeasureSpec.getSize(widthMeasureSpec) + margin * 2
+        val w = width + margin * 2
         val tW = oneSize + gridHorSpace
         val column =
             (if ((w % tW).toInt() == 0) w / tW else (w / tW)).toInt()
         val row =
             (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
-        val h = row * tW + margin * 2
-        val hSpec = MeasureSpec.makeMeasureSpec(h.toInt(), MeasureSpec.EXACTLY)
-        super.onMeasure(
-            MeasureSpec.makeMeasureSpec(w, MeasureSpec.getMode(widthMeasureSpec)),
-            hSpec
-        )
+        return (row * tW + margin * 2).toInt()
     }
-
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -256,29 +261,31 @@ class CalligraphyTextView : View {
         rect.top = row * (oneTextSize + gridVerSpace) + margin
         rect.right = rect.left + oneTextSize
         rect.bottom = rect.top + oneTextSize
-        //绘制背景框
-        canvas?.drawRect(rect, gridBorderPaint)
+        if (enableGrid) {
+            //绘制背景框
+            canvas?.drawRect(rect, gridBorderPaint)
 
-        //绘制田字格
-        canvas?.drawLine(
-            rect.left,
-            rect.top + rect.height() / 2,
-            rect.right,
-            rect.top + rect.height() / 2,
-            gridLinePaint
-        )
-        canvas?.drawLine(
-            rect.left + rect.width() / 2,
-            rect.top,
-            rect.left + rect.width() / 2,
-            rect.bottom,
-            gridLinePaint
-        )
+            //绘制田字格
+            canvas?.drawLine(
+                rect.left,
+                rect.top + rect.height() / 2,
+                rect.right,
+                rect.top + rect.height() / 2,
+                gridLinePaint
+            )
+            canvas?.drawLine(
+                rect.left + rect.width() / 2,
+                rect.top,
+                rect.left + rect.width() / 2,
+                rect.bottom,
+                gridLinePaint
+            )
 
-        //米字格
-        if (gridBgStyle == GridBgStyle.MIZI) {
-            canvas?.drawLine(rect.left, rect.top, rect.right, rect.bottom, gridLinePaint)
-            canvas?.drawLine(rect.right, rect.top, rect.left, rect.bottom, gridLinePaint)
+            //米字格
+            if (gridBgStyle == GridBgStyle.MIZI) {
+                canvas?.drawLine(rect.left, rect.top, rect.right, rect.bottom, gridLinePaint)
+                canvas?.drawLine(rect.right, rect.top, rect.left, rect.bottom, gridLinePaint)
+            }
         }
 
         val textW = textPaint.measureText(c.toString())

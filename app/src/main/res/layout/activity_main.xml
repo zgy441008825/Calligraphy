@@ -4,31 +4,163 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".MainActivity">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.zougy.calligraphy.CalligraphyTextView
-            android:id="@+id/mainAcViewText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_10"
-            android:text="@string/testString"
-            android:textSize="@dimen/dp_50"
-            app:gridBgStyle="mizi"
-            app:gridHorSpace="@dimen/dp_10"
-            app:gridVerSpace="@dimen/dp_10" />
-    </ScrollView>
-
-    <Button
-        android:id="@+id/mainAcBt"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_10"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
+    <View
+        android:id="@+id/acMainViewTop"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_180"
+        android:background="@drawable/img_main_top_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/acMainTvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_15"
+        android:text="@string/app_name"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/sp_26"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/acMainTvStatisticsWordNumber"
+        style="@style/styleMainStatisticsNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/acMainTvAppName" />
+
+    <TextView
+        android:id="@+id/acMainTvStatisticsTime"
+        style="@style/styleMainStatisticsNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_90"
+        android:text="0"
+        app:layout_constraintEnd_toStartOf="@+id/acMainTvStatisticsWordNumber"
+        app:layout_constraintTop_toTopOf="@+id/acMainTvStatisticsWordNumber" />
+
+    <TextView
+        android:id="@+id/acMainTvStatisticsContinueDay"
+        style="@style/styleMainStatisticsNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_90"
+        android:text="0"
+        app:layout_constraintStart_toEndOf="@+id/acMainTvStatisticsWordNumber"
+        app:layout_constraintTop_toTopOf="@+id/acMainTvStatisticsWordNumber" />
+
+    <TextView
+        style="@style/styleMainStatisticsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/mainTopStatisticsTime"
+        app:layout_constraintEnd_toEndOf="@+id/acMainTvStatisticsTime"
+        app:layout_constraintStart_toStartOf="@+id/acMainTvStatisticsTime"
+        app:layout_constraintTop_toBottomOf="@+id/acMainTvStatisticsTime" />
+
+    <TextView
+        style="@style/styleMainStatisticsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/mainTopStatisticsWordNo"
+        app:layout_constraintEnd_toEndOf="@+id/acMainTvStatisticsWordNumber"
+        app:layout_constraintStart_toStartOf="@+id/acMainTvStatisticsWordNumber"
+        app:layout_constraintTop_toBottomOf="@+id/acMainTvStatisticsWordNumber" />
+
+    <TextView
+        style="@style/styleMainStatisticsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/mainTopStatisticsDay"
+        app:layout_constraintEnd_toEndOf="@+id/acMainTvStatisticsContinueDay"
+        app:layout_constraintStart_toStartOf="@+id/acMainTvStatisticsContinueDay"
+        app:layout_constraintTop_toBottomOf="@+id/acMainTvStatisticsContinueDay" />
+
+    <View
+        android:id="@+id/acMainViewTask"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_100"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:background="@drawable/rect_half_radius_white"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/acMainTvStatisticsWordNumber" />
+
+    <ImageView
+        android:id="@+id/acMainImgTaskWord"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_50"
+        android:background="@drawable/circle"
+        android:backgroundTint="@color/mainCircleGreyTint"
+        android:padding="@dimen/dp_8"
+        android:src="@drawable/img_main_item_word"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/acMainViewTask" />
+
+    <ImageView
+        android:id="@+id/acMainImgTaskSent"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@drawable/circle"
+        android:backgroundTint="@color/mainCircleGreyTint"
+        android:padding="@dimen/dp_10"
+        android:src="@drawable/img_main_item_sent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/acMainViewTask" />
+
+    <TextView
+        style="@style/styleMainStatisticsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/mainPracticeWord"
+        android:textColor="@color/baseTextColor"
+        app:layout_constraintEnd_toEndOf="@+id/acMainImgTaskWord"
+        app:layout_constraintStart_toStartOf="@+id/acMainImgTaskWord"
+        app:layout_constraintTop_toBottomOf="@+id/acMainImgTaskWord" />
+
+    <TextView
+        style="@style/styleMainStatisticsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/mainPracticeSent"
+        android:textColor="@color/baseTextColor"
+        app:layout_constraintEnd_toEndOf="@+id/acMainImgTaskSent"
+        app:layout_constraintStart_toStartOf="@+id/acMainImgTaskSent"
+        app:layout_constraintTop_toBottomOf="@+id/acMainImgTaskSent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:text="@string/mainPracticeToday"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/sp_18"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/acMainViewTask" />
 </androidx.constraintlayout.widget.ConstraintLayout>
