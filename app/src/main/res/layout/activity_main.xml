@@ -164,13 +164,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/acMainViewTask" />
 
-    <com.zougy.calligraphy.view.CalligraphyView
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_50"
-        android:text="今"
-        android:textSize="@dimen/sp_32"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acMainViewTask" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

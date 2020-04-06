@@ -7,15 +7,13 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import com.zougy.calligraphy.R
+import com.zougy.calligraphy.view.CalligraphyView.GridBgStyle.fontTypes
 import org.xutils.common.util.DensityUtil
 
-import com.zougy.calligraphy.view.CalligraphyLayout.GridBgStyle
-import com.zougy.calligraphy.view.CalligraphyLayout.GridBgStyle.fontTypes
-
 /**
- * Description:绘制一个带田字格或米字格的文字<br>
+ * Description:绘制文本，增加田字格或者米字格<br>
  * Author:邹高原<br>
- * Date:04/06 0006<br>
+ * Date:04/03 0003<br>
  * Email:441008824@qq.com
  */
 class CalligraphyView : View {
@@ -36,88 +34,60 @@ class CalligraphyView : View {
     private val textPaint = TextPaint()
 
     /**
-     * 网格线的大小(4边的线条)
+     * 网格线的大小
      */
     private var gridLineWidth = 2f
-        set(value) {
-            field = value
-            invalidate()
-        }
 
     /**
-     * 斜线大小(虚线网格)
+     * 斜线大小
      */
     private var gridSlashWidth = 2f
-        set(value) {
-            field = value
-            invalidate()
-        }
 
     /**
      * 网格样式
      * @see GridBgStyle
      */
     private var gridBgStyle = GridBgStyle.MATTS
-        set(value) {
-            field = value
-            invalidate()
-        }
 
     /**
      * 网格颜色
      */
     private var gridColor = Color.RED
-        set(value) {
-            field = value
-            invalidate()
-        }
+
+    /**
+     * 每个字水平间隔
+     */
+    private var gridHorSpace = DensityUtil.dip2px(5f)
+
+    /**
+     * 每行的间距
+     */
+    private var gridVerSpace = DensityUtil.dip2px(5f)
 
     /**
      * 显示的文本
      */
     private var text = ""
-        set(value) {
-            if (TextUtils.isEmpty(value) || value.length != 1) return
-            field = value
-            invalidate()
-        }
 
     /**
      * 字体颜色
      */
     private var textColor = Color.BLACK
-        set(value) {
-            field = value
-            invalidate()
-        }
 
     /**
      * 字体大小
      */
     private var textSize = DensityUtil.dip2px(20f).toFloat()
-        set(value) {
-            field = value
-            invalidate()
-        }
 
     /**
      * 字体距离边框的距离
      */
     private var textPadding = 0
-        set(value) {
-            field = value
-            invalidate()
-        }
 
     /**
      * 字体样式
      */
     private var fontType = 0
-        set(value) {
-            if (value < 0 || value >= fontTypes.size) return
-            field = value
-            invalidate()
-        }
 
     /**
      * 屏幕宽度
@@ -130,22 +100,19 @@ class CalligraphyView : View {
     private var viewHeight = 0
 
     /**
-     * View距离边的宽度
+     * View距离左边的宽度
      */
     private var margin = 0
-        set(value) {
-            field = value
-            invalidate()
-        }
+
+    /**
+     * 一个字实际要占用的大小
+     */
+    private var oneTextSize = 0f
 
     /**
      * 是否绘制背景框
      */
     private var enableGrid = true
-        set(value) {
-            field = value
-            invalidate()
-        }
 
 
     constructor(context: Context) : this(context, null)
@@ -169,6 +136,14 @@ class CalligraphyView : View {
                     GridBgStyle.MATTS
                 )
             gridColor = typeArray.getColor(R.styleable.CalligraphyView_gridColor, Color.RED)
+            gridHorSpace = typeArray.getDimension(
+                R.styleable.CalligraphyView_gridHorSpace,
+                DensityUtil.dip2px(5f).toFloat()
+            ).toInt()
+            gridVerSpace = typeArray.getDimension(
+                R.styleable.CalligraphyView_gridVerSpace,
+                DensityUtil.dip2px(5f).toFloat()
+            ).toInt()
             text = typeArray.getString(R.styleable.CalligraphyView_android_text).toString()
             textColor =
                 typeArray.getColor(R.styleable.CalligraphyView_android_textColor, Color.BLACK)
@@ -206,33 +181,79 @@ class CalligraphyView : View {
         textPaint.typeface = Typeface.createFromAsset(context.assets, fontTypes[fontType])
     }
 
+    fun setText(text: String) {
+        this.text = text
+        val layoutP = layoutParams
+        layoutP.width = width
+        layoutP.height = getTextHeight(width)
+        layoutParams = layoutP
+        invalidate()
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         viewWidth = w
         viewHeight = h
     }
 
+    private var widthMode = 0
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        if (TextUtils.isEmpty(text)) return
+        widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val hSpec = MeasureSpec.makeMeasureSpec(getTextHeight(MeasureSpec.getSize(widthMeasureSpec)), MeasureSpec.EXACTLY)
+        super.onMeasure(widthMeasureSpec, hSpec)
+    }
+
+    private fun getTextHeight(width: Int): Int {
+        val oneHeight =
+            (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2
+        val oneSize =
+            (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(oneHeight)
+        val w = width + margin * 2
+        val tW = oneSize + gridHorSpace
+        val column =
+            (if ((w % tW).toInt() == 0) w / tW else (w / tW)).toInt()
+        val row =
+            (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
+        return (row * tW + margin * 2).toInt()
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        if (TextUtils.isEmpty(text) || text.length != 1) return
+        if (TextUtils.isEmpty(text)) return
         if (viewWidth == 0 || viewHeight == 0) return
-        drawOneText(text[0], canvas)
+        val oneWordHeight =
+            (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2
+        oneTextSize = (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(
+            oneWordHeight
+        )
+        val tW = oneTextSize + gridHorSpace
+        val column =
+            (if ((viewWidth % tW).toInt() == 0) viewWidth / tW else (viewWidth / tW)).toInt()
+        val row =
+            (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
+        for (x in 0 until row) {
+            for (y in 0 until column) {
+                val index = x * column + y
+                if (index >= text.length) return
+                drawOneText(text[index], y, x, canvas)
+            }
+        }
     }
 
     /**
      * 绘制一个字
+     * @param col 列
+     * @param row 行
      */
-    private fun drawOneText(c: Char, canvas: Canvas?) {
-        val oneWordHeight =
-            (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2
-        val oneTextSize = (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(
-            oneWordHeight
-        )
+    private fun drawOneText(c: Char, col: Int, row: Int, canvas: Canvas?) {
         val rect = RectF()
-        rect.left = (viewWidth - oneTextSize) / 2 + margin.toFloat() + gridLineWidth
-        rect.top = (viewHeight - oneTextSize) / 2 + margin.toFloat() + gridLineWidth
-        rect.right = rect.left + oneTextSize - gridLineWidth
-        rect.bottom = rect.top + oneTextSize - gridLineWidth
+        rect.left = col * (oneTextSize + gridHorSpace) + margin
+        rect.top = row * (oneTextSize + gridVerSpace) + margin
+        rect.right = rect.left + oneTextSize
+        rect.bottom = rect.top + oneTextSize
         if (enableGrid) {
             //绘制背景框
             canvas?.drawRect(rect, gridBorderPaint)
@@ -271,4 +292,30 @@ class CalligraphyView : View {
         )
     }
 
+
+    /**
+     * 网格背景样式
+     */
+    object GridBgStyle {
+
+        /**
+         * 田字格
+         */
+        const val MATTS = 0
+
+        /**
+         * 米字格
+         */
+        const val MIZI = 1
+
+
+        val fontTypes = arrayOf(
+            "kaiti.TTF",
+            "kaiti_1.TTF",
+            "mircorsoft_kaiti.TTF",
+            "ruiyunxingkai.TTF",
+            "xingkai.TTF",
+            "yuhongling_xingkai.TTF"
+        )
+    }
 }
