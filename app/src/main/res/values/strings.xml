@@ -8,5 +8,6 @@
     <string name="mainPracticeWord">单字练习</string>
     <string name="mainPracticeSent">名句练习</string>
     <string name="mainPracticeToday">今日推荐</string>
+    <string name="mainTaskToday">今日任务</string>
 
 </resources>
