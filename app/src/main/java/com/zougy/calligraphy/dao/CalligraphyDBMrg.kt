@@ -19,5 +19,4 @@ class CalligraphyDBMrg : BaseDBMgr(DB_NAME, DB_VERSION, null) {
             }
         }
     }
-
 }
