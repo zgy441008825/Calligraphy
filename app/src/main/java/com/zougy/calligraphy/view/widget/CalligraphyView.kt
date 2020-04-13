@@ -1,4 +1,4 @@
-package com.zougy.calligraphy.view
+package com.zougy.calligraphy.view.widget
 
 import android.content.Context
 import android.graphics.*
@@ -7,7 +7,7 @@ import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import com.zougy.calligraphy.R
-import com.zougy.calligraphy.view.CalligraphyView.GridBgStyle.fontTypes
+import com.zougy.calligraphy.view.widget.CalligraphyView.GridBgStyle.fontTypes
 import org.xutils.common.util.DensityUtil
 
 /**

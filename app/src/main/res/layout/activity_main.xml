@@ -7,13 +7,6 @@
     android:background="@android:color/white"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
     <View
         android:id="@+id/acMainViewTop"
         android:layout_width="match_parent"
@@ -111,25 +104,38 @@
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_50"
         android:background="@drawable/circle"
         android:backgroundTint="@color/mainCircleGreyTint"
         android:padding="@dimen/dp_8"
         android:src="@drawable/img_main_item_word"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/acMainImgTaskSent"
+        app:layout_constraintStart_toStartOf="@+id/acMainViewTask"
         app:layout_constraintTop_toTopOf="@+id/acMainViewTask" />
 
     <ImageView
         android:id="@+id/acMainImgTaskSent"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
-        android:layout_marginStart="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_10"
         android:background="@drawable/circle"
         android:backgroundTint="@color/mainCircleGreyTint"
         android:padding="@dimen/dp_10"
         android:src="@drawable/img_main_item_sent"
-        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="@+id/acMainViewTask"
+        app:layout_constraintStart_toStartOf="@+id/acMainViewTask"
+        app:layout_constraintTop_toTopOf="@+id/acMainViewTask" />
+
+    <ImageView
+        android:id="@+id/acMainImgTaskSearch"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@drawable/circle"
+        android:backgroundTint="@color/mainCircleGreyTint"
+        android:padding="@dimen/dp_10"
+        android:src="@drawable/img_main_item_sent"
+        app:layout_constraintEnd_toEndOf="@+id/acMainViewTask"
+        app:layout_constraintStart_toEndOf="@+id/acMainImgTaskSent"
         app:layout_constraintTop_toTopOf="@+id/acMainViewTask" />
 
     <TextView
@@ -153,6 +159,17 @@
         app:layout_constraintEnd_toEndOf="@+id/acMainImgTaskSent"
         app:layout_constraintStart_toStartOf="@+id/acMainImgTaskSent"
         app:layout_constraintTop_toBottomOf="@+id/acMainImgTaskSent" />
+
+    <TextView
+        style="@style/styleMainStatisticsInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:text="@string/mainPracticeSearch"
+        android:textColor="@color/baseTextColor"
+        app:layout_constraintEnd_toEndOf="@+id/acMainImgTaskSearch"
+        app:layout_constraintStart_toStartOf="@+id/acMainImgTaskSearch"
+        app:layout_constraintTop_toBottomOf="@+id/acMainImgTaskSearch" />
 
     <TextView
         android:layout_width="wrap_content"
