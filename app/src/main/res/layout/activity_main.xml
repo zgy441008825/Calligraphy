@@ -87,98 +87,42 @@
         app:layout_constraintStart_toStartOf="@+id/acMainTvStatisticsContinueDay"
         app:layout_constraintTop_toBottomOf="@+id/acMainTvStatisticsContinueDay" />
 
-    <View
+
+    <TextView
         android:id="@+id/acMainViewTask"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_100"
-        android:layout_marginStart="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_50"
-        android:layout_marginEnd="@dimen/dp_30"
-        android:background="@drawable/rect_half_radius_white"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/acMainTvStatisticsWordNumber" />
-
-    <ImageView
-        android:id="@+id/acMainImgTaskWord"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="@drawable/circle"
-        android:backgroundTint="@color/mainCircleGreyTint"
-        android:padding="@dimen/dp_8"
-        android:src="@drawable/img_main_item_word"
-        app:layout_constraintEnd_toStartOf="@+id/acMainImgTaskSent"
-        app:layout_constraintStart_toStartOf="@+id/acMainViewTask"
-        app:layout_constraintTop_toTopOf="@+id/acMainViewTask" />
-
-    <ImageView
-        android:id="@+id/acMainImgTaskSent"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="@drawable/circle"
-        android:backgroundTint="@color/mainCircleGreyTint"
-        android:padding="@dimen/dp_10"
-        android:src="@drawable/img_main_item_sent"
-        app:layout_constraintEnd_toEndOf="@+id/acMainViewTask"
-        app:layout_constraintStart_toStartOf="@+id/acMainViewTask"
-        app:layout_constraintTop_toTopOf="@+id/acMainViewTask" />
-
-    <ImageView
-        android:id="@+id/acMainImgTaskSearch"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_10"
-        android:background="@drawable/circle"
-        android:backgroundTint="@color/mainCircleGreyTint"
-        android:padding="@dimen/dp_10"
-        android:src="@drawable/img_main_item_sent"
-        app:layout_constraintEnd_toEndOf="@+id/acMainViewTask"
-        app:layout_constraintStart_toEndOf="@+id/acMainImgTaskSent"
-        app:layout_constraintTop_toTopOf="@+id/acMainViewTask" />
-
-    <TextView
-        style="@style/styleMainStatisticsInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        android:text="@string/mainPracticeWord"
-        android:textColor="@color/baseTextColor"
-        app:layout_constraintEnd_toEndOf="@+id/acMainImgTaskWord"
-        app:layout_constraintStart_toStartOf="@+id/acMainImgTaskWord"
-        app:layout_constraintTop_toBottomOf="@+id/acMainImgTaskWord" />
-
-    <TextView
-        style="@style/styleMainStatisticsInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        android:text="@string/mainPracticeSent"
-        android:textColor="@color/baseTextColor"
-        app:layout_constraintEnd_toEndOf="@+id/acMainImgTaskSent"
-        app:layout_constraintStart_toStartOf="@+id/acMainImgTaskSent"
-        app:layout_constraintTop_toBottomOf="@+id/acMainImgTaskSent" />
-
-    <TextView
-        style="@style/styleMainStatisticsInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        android:text="@string/mainPracticeSearch"
-        android:textColor="@color/baseTextColor"
-        app:layout_constraintEnd_toEndOf="@+id/acMainImgTaskSearch"
-        app:layout_constraintStart_toStartOf="@+id/acMainImgTaskSearch"
-        app:layout_constraintTop_toBottomOf="@+id/acMainImgTaskSearch" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:text="@string/mainPracticeToday"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="@string/mainTaskToday"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/sp_18"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/acMainViewTask" />
+        app:layout_constraintTop_toBottomOf="@+id/acMainViewTop" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/dp_10"
+        app:layout_constraintBottom_toTopOf="@+id/acMainBtStart"
+        app:layout_constraintTop_toBottomOf="@+id/acMainViewTask">
+
+        <com.zougy.calligraphy.view.widget.CalligraphyView
+            android:id="@+id/acMainCallView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_26"
+            app:gridBgStyle="mizi" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/acMainBtStart"
+        style="@style/DefaultBt"
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="@dimen/dp_36"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:text="@string/mainBtStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

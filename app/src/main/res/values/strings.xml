@@ -11,4 +11,6 @@
     <string name="mainPracticeToday">今日推荐</string>
     <string name="mainTaskToday">今日任务</string>
 
+    <string name="mainBtStart">开始练习</string>
+
 </resources>

@@ -5,6 +5,7 @@ import android.graphics.*
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.zougy.calligraphy.R
 import com.zougy.calligraphy.view.widget.CalligraphyView.GridBgStyle.fontTypes
@@ -190,10 +191,13 @@ class CalligraphyView : View {
         invalidate()
     }
 
+    fun getText(): String = text
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         viewWidth = w
         viewHeight = h
+        Log.d("CalligraphyView", "ZLog onSizeChanged $w $h")
     }
 
     private var widthMode = 0
@@ -207,16 +211,11 @@ class CalligraphyView : View {
     }
 
     private fun getTextHeight(width: Int): Int {
-        val oneHeight =
-            (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2
-        val oneSize =
-            (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(oneHeight)
-        val w = width + margin * 2
+        val oneHeight = (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2
+        val oneSize = (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(oneHeight)
         val tW = oneSize + gridHorSpace
-        val column =
-            (if ((w % tW).toInt() == 0) w / tW else (w / tW)).toInt()
-        val row =
-            (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
+        val column = (if ((width % tW).toInt() == 0) width / tW else (width / tW)).toInt()
+        val row = (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
         return (row * tW + margin * 2).toInt()
     }
 
@@ -250,8 +249,8 @@ class CalligraphyView : View {
      */
     private fun drawOneText(c: Char, col: Int, row: Int, canvas: Canvas?) {
         val rect = RectF()
-        rect.left = col * (oneTextSize + gridHorSpace) + margin
-        rect.top = row * (oneTextSize + gridVerSpace) + margin
+        rect.left = col * (oneTextSize + gridHorSpace) + margin + gridBorderPaint.strokeWidth
+        rect.top = row * (oneTextSize + gridVerSpace) + margin + gridBorderPaint.strokeWidth
         rect.right = rect.left + oneTextSize
         rect.bottom = rect.top + oneTextSize
         if (enableGrid) {
