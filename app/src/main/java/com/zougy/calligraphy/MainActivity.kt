@@ -19,6 +19,6 @@ class MainActivity : AppCompatActivity() {
         })
         acMainCallView.postDelayed({
             acMainCallView.setText(getString(R.string.testString))
-        }, 500)
+        }, 10)
     }
 }

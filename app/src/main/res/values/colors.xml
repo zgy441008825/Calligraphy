@@ -6,4 +6,8 @@
 
     <color name="mainCircleGreyTint">#F3F3F3</color>
     <color name="baseTextColor">#222</color>
+
+    <color name="btNormal">#C64739</color>
+    <color name="btPressed">#D3342C</color>
+    <color name="btDisable">#EBEBEB</color>
 </resources>

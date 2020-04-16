@@ -48,7 +48,7 @@ class CalligraphyView : View {
      * 网格样式
      * @see GridBgStyle
      */
-    private var gridBgStyle = GridBgStyle.MATTS
+    private var gridBgStyle = GridBgStyle.MIZI
 
     /**
      * 网格颜色
@@ -134,7 +134,7 @@ class CalligraphyView : View {
             gridBgStyle =
                 typeArray.getInt(
                     R.styleable.CalligraphyView_gridBgStyle,
-                    GridBgStyle.MATTS
+                    GridBgStyle.MIZI
                 )
             gridColor = typeArray.getColor(R.styleable.CalligraphyView_gridColor, Color.RED)
             gridHorSpace = typeArray.getDimension(
@@ -161,7 +161,8 @@ class CalligraphyView : View {
                     R.styleable.CalligraphyView_android_layout_margin,
                     0f
                 ).toInt()
-            enableGrid = typeArray.getBoolean(R.styleable.CalligraphyView_enableGridBackground, true)
+            enableGrid =
+                typeArray.getBoolean(R.styleable.CalligraphyView_enableGridBackground, true)
             fontType = typeArray.getInt(R.styleable.CalligraphyView_textFontType, 0)
             typeArray.recycle()
         }
@@ -206,16 +207,21 @@ class CalligraphyView : View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         if (TextUtils.isEmpty(text)) return
         widthMode = MeasureSpec.getMode(widthMeasureSpec)
-        val hSpec = MeasureSpec.makeMeasureSpec(getTextHeight(MeasureSpec.getSize(widthMeasureSpec)), MeasureSpec.EXACTLY)
+        val hSpec = MeasureSpec.makeMeasureSpec(
+            getTextHeight(MeasureSpec.getSize(widthMeasureSpec)),
+            MeasureSpec.EXACTLY
+        )
         super.onMeasure(widthMeasureSpec, hSpec)
     }
 
     private fun getTextHeight(width: Int): Int {
         val oneHeight = (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2
-        val oneSize = (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(oneHeight)
+        val oneSize =
+            (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(oneHeight)
         val tW = oneSize + gridHorSpace
         val column = (if ((width % tW).toInt() == 0) width / tW else (width / tW)).toInt()
-        val row = (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
+        val row =
+            (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
         return (row * tW + margin * 2).toInt()
     }
 
