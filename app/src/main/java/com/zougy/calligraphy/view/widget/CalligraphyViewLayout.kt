@@ -1,14 +1,11 @@
 package com.zougy.calligraphy.view.widget
 
 import android.content.Context
-import android.graphics.*
-import android.text.TextPaint
+import android.graphics.Canvas
+import android.graphics.RectF
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.Log
-import android.view.View
 import com.zougy.calligraphy.R
-import com.zougy.calligraphy.view.widget.CalligraphyView.GridBgStyle.fontTypes
 import org.xutils.common.util.DensityUtil
 
 /**
@@ -17,43 +14,7 @@ import org.xutils.common.util.DensityUtil
  * Date:04/03 0003<br>
  * Email:441008824@qq.com
  */
-class CalligraphyView : View {
-
-    /**
-     * 网格边框画笔
-     */
-    private val gridBorderPaint = Paint()
-
-    /**
-     * 网格线画笔
-     */
-    private val gridLinePaint = Paint()
-
-    /**
-     * 字体画笔
-     */
-    private val textPaint = TextPaint()
-
-    /**
-     * 网格线的大小
-     */
-    private var gridLineWidth = 2f
-
-    /**
-     * 斜线大小
-     */
-    private var gridSlashWidth = 2f
-
-    /**
-     * 网格样式
-     * @see GridBgStyle
-     */
-    private var gridBgStyle = GridBgStyle.MIZI
-
-    /**
-     * 网格颜色
-     */
-    private var gridColor = Color.RED
+class CalligraphyViewLayout : BaseCalligraphyView {
 
     /**
      * 每个字水平间隔
@@ -66,31 +27,6 @@ class CalligraphyView : View {
     private var gridVerSpace = DensityUtil.dip2px(5f)
 
     /**
-     * 显示的文本
-     */
-    private var text = ""
-
-    /**
-     * 字体颜色
-     */
-    private var textColor = Color.BLACK
-
-    /**
-     * 字体大小
-     */
-    private var textSize = DensityUtil.dip2px(20f).toFloat()
-
-    /**
-     * 字体距离边框的距离
-     */
-    private var textPadding = 0
-
-    /**
-     * 字体样式
-     */
-    private var fontType = 0
-
-    /**
      * 屏幕宽度
      */
     private var viewWidth = 0
@@ -101,19 +37,9 @@ class CalligraphyView : View {
     private var viewHeight = 0
 
     /**
-     * View距离左边的宽度
-     */
-    private var margin = 0
-
-    /**
      * 一个字实际要占用的大小
      */
     private var oneTextSize = 0f
-
-    /**
-     * 是否绘制背景框
-     */
-    private var enableGrid = true
 
 
     constructor(context: Context) : this(context, null)
@@ -124,66 +50,25 @@ class CalligraphyView : View {
         context,
         attrs,
         styleId
-    ) {
+    )
+
+    override fun initView(context: Context, attrs: AttributeSet?) {
+        super.initView(context, attrs)
         if (attrs != null) {
-            val typeArray = context.obtainStyledAttributes(attrs, R.styleable.CalligraphyView)
-            gridLineWidth =
-                typeArray.getDimension(R.styleable.CalligraphyView_gridLineWidth, 2f)
-            gridSlashWidth =
-                typeArray.getDimension(R.styleable.CalligraphyView_gridSlashWidth, 2f)
-            gridBgStyle =
-                typeArray.getInt(
-                    R.styleable.CalligraphyView_gridBgStyle,
-                    GridBgStyle.MIZI
-                )
-            gridColor = typeArray.getColor(R.styleable.CalligraphyView_gridColor, Color.RED)
+            val typeArray = context.obtainStyledAttributes(attrs, R.styleable.CalligraphyViewLayout)
             gridHorSpace = typeArray.getDimension(
-                R.styleable.CalligraphyView_gridHorSpace,
-                DensityUtil.dip2px(5f).toFloat()
+                R.styleable.CalligraphyViewLayout_gridHorSpace,
+                gridHorSpace.toFloat()
             ).toInt()
             gridVerSpace = typeArray.getDimension(
-                R.styleable.CalligraphyView_gridVerSpace,
-                DensityUtil.dip2px(5f).toFloat()
+                R.styleable.CalligraphyViewLayout_gridVerSpace,
+                gridVerSpace.toFloat()
             ).toInt()
-            text = typeArray.getString(R.styleable.CalligraphyView_android_text).toString()
-            textColor =
-                typeArray.getColor(R.styleable.CalligraphyView_android_textColor, Color.BLACK)
-            textSize = typeArray.getDimension(
-                R.styleable.CalligraphyView_android_textSize,
-                DensityUtil.dip2px(20f).toFloat()
-            )
-            textPadding = typeArray.getDimension(
-                R.styleable.CalligraphyView_android_padding,
-                0f
-            ).toInt()
-            margin =
-                typeArray.getDimension(
-                    R.styleable.CalligraphyView_android_layout_margin,
-                    0f
-                ).toInt()
-            enableGrid =
-                typeArray.getBoolean(R.styleable.CalligraphyView_enableGridBackground, true)
-            fontType = typeArray.getInt(R.styleable.CalligraphyView_textFontType, 0)
             typeArray.recycle()
         }
-
-        gridBorderPaint.isAntiAlias = true
-        gridBorderPaint.strokeWidth = gridLineWidth
-        gridBorderPaint.color = gridColor
-        gridBorderPaint.style = Paint.Style.STROKE
-
-        gridLinePaint.isAntiAlias = true
-        gridLinePaint.strokeWidth = gridSlashWidth
-        gridLinePaint.color = gridColor
-        gridLinePaint.pathEffect = DashPathEffect(floatArrayOf(10f, 10f), 40f)
-
-        textPaint.isAntiAlias = true
-        textPaint.textSize = textSize
-        textPaint.color = textColor
-        textPaint.typeface = Typeface.createFromAsset(context.assets, fontTypes[fontType])
     }
 
-    fun setText(text: String) {
+    fun setShowText(text: String) {
         this.text = text
         val layoutP = layoutParams
         layoutP.width = width
@@ -192,13 +77,12 @@ class CalligraphyView : View {
         invalidate()
     }
 
-    fun getText(): String = text
+    fun getShowText(): String = text
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         viewWidth = w
         viewHeight = h
-        Log.d("CalligraphyView", "ZLog onSizeChanged $w $h")
     }
 
     private var widthMode = 0
@@ -207,21 +91,16 @@ class CalligraphyView : View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         if (TextUtils.isEmpty(text)) return
         widthMode = MeasureSpec.getMode(widthMeasureSpec)
-        val hSpec = MeasureSpec.makeMeasureSpec(
-            getTextHeight(MeasureSpec.getSize(widthMeasureSpec)),
-            MeasureSpec.EXACTLY
-        )
+        val hSpec = MeasureSpec.makeMeasureSpec(getTextHeight(MeasureSpec.getSize(widthMeasureSpec)), MeasureSpec.EXACTLY)
         super.onMeasure(widthMeasureSpec, hSpec)
     }
 
     private fun getTextHeight(width: Int): Int {
         val oneHeight = (textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2
-        val oneSize =
-            (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(oneHeight)
+        val oneSize = (textPaint.measureText(text[0].toString()) + textPadding * 2).coerceAtLeast(oneHeight)
         val tW = oneSize + gridHorSpace
         val column = (if ((width % tW).toInt() == 0) width / tW else (width / tW)).toInt()
-        val row =
-            (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
+        val row = (if ((text.length % column) == 0) text.length / column else (text.length / column) + 1).toInt()
         return (row * tW + margin * 2).toInt()
     }
 
@@ -297,30 +176,4 @@ class CalligraphyView : View {
         )
     }
 
-
-    /**
-     * 网格背景样式
-     */
-    object GridBgStyle {
-
-        /**
-         * 田字格
-         */
-        const val MATTS = 0
-
-        /**
-         * 米字格
-         */
-        const val MIZI = 1
-
-
-        val fontTypes = arrayOf(
-            "kaiti.TTF",
-            "kaiti_1.TTF",
-            "mircorsoft_kaiti.TTF",
-            "ruiyunxingkai.TTF",
-            "xingkai.TTF",
-            "yuhongling_xingkai.TTF"
-        )
-    }
 }

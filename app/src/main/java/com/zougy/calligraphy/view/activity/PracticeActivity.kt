@@ -18,7 +18,7 @@ class PracticeActivity : AppCompatActivity() {
         acPracticeRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         acPracticeCalligraphyView.postDelayed({
-            acPracticeCalligraphyView.setText(showStrings[0].toString())
+            acPracticeCalligraphyView.setShowText(showStrings[0].toString())
         }, 1)
     }
 }

@@ -14,11 +14,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         acMainBtStart.onClickOnSinge({
             val intent = Intent(this, PracticeActivity::class.java)
-            intent.putExtra("text", acMainCallView.getText())
+            intent.putExtra("text", acMainCallView.getShowText())
             startActivity(intent)
         })
         acMainCallView.postDelayed({
-            acMainCallView.setText(getString(R.string.testString))
+            acMainCallView.setShowText(getString(R.string.testString))
         }, 10)
     }
 }

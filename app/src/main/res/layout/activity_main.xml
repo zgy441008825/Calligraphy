@@ -107,12 +107,13 @@
         app:layout_constraintBottom_toTopOf="@+id/acMainBtStart"
         app:layout_constraintTop_toBottomOf="@+id/acMainViewTask">
 
-        <com.zougy.calligraphy.view.widget.CalligraphyView
+        <com.zougy.calligraphy.view.widget.CalligraphyViewLayout
             android:id="@+id/acMainCallView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_26"
-            app:gridBgStyle="mizi" />
+            app:gridBgStyle="mizi"
+            app:gridVerSpace="@dimen/dp_20" />
     </ScrollView>
 
     <Button
