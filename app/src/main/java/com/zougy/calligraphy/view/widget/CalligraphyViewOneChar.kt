@@ -2,7 +2,6 @@ package com.zougy.calligraphy.view.widget
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.RectF
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -37,11 +36,36 @@ class CalligraphyViewOneChar : BaseCalligraphyView {
         viewHeight = h
     }
 
+    private val oneTextRectF = RectF()
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if (TextUtils.isEmpty(text) || text.length != 1 || canvas == null) return
-        drawOneText(text[0], canvas)
+        val viewSize = viewHeight.coerceAtMost(viewWidth)
+        oneTextRectF.left = ((viewWidth - viewSize) / 2).toFloat()
+        oneTextRectF.top = ((viewHeight - viewSize) / 2).toFloat()
+        oneTextRectF.right = viewWidth - oneTextRectF.left
+        oneTextRectF.bottom = viewHeight - oneTextRectF.top
+        drawOneText(text[0], canvas, oneTextRectF)
     }
+
+//    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+//        val wSize = MeasureSpec.getSize(widthMeasureSpec)
+//        val wMode = getModeName(MeasureSpec.getMode(widthMeasureSpec))
+//        val hSize = MeasureSpec.getSize(heightMeasureSpec)
+//        val hMode = getModeName(MeasureSpec.getMode(heightMeasureSpec))
+//        Log.d("CalligraphyViewOneChar", "ZLog onMeasure wSize:$wSize wMode:$wMode hSize:$hSize hMode:$hMode")
+//    }
+//
+//    private fun getModeName(mode: Int): String {
+//        return when (mode) {
+//            MeasureSpec.AT_MOST -> "AT_MOST"
+//            MeasureSpec.EXACTLY -> "EXACTLY"
+//            MeasureSpec.UNSPECIFIED -> "UNSPECIFIED"
+//            else -> "UNKNOWN"
+//        }
+//    }
 
     fun setShowText(text: String) {
         this.text = text
@@ -51,13 +75,8 @@ class CalligraphyViewOneChar : BaseCalligraphyView {
     /**
      * 绘制一个字
      */
-    private fun drawOneText(c: Char, canvas: Canvas) {
-        val rect = RectF()
-        val viewSize = viewHeight.coerceAtMost(viewWidth)
-        rect.left = ((viewWidth - viewSize) / 2).toFloat()
-        rect.top = ((viewHeight - viewSize) / 2).toFloat()
-        rect.right = viewWidth - rect.left
-        rect.bottom = viewHeight - rect.top
+    private fun drawOneText(c: Char, canvas: Canvas, rect: RectF) {
+
         if (enableGrid) {
             //绘制背景框
             canvas.drawRect(rect, gridBorderPaint)

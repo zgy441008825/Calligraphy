@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.zougy.calligraphy.R
 import org.xutils.common.util.DensityUtil
@@ -73,7 +74,11 @@ abstract class BaseCalligraphyView : View {
     /**
      * 字体大小
      */
-    private var textSize = DensityUtil.dip2px(20f).toFloat()
+    var textSize = DensityUtil.dip2px(20f).toFloat()
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     /**
      * 字体距离边框的距离
@@ -96,7 +101,7 @@ abstract class BaseCalligraphyView : View {
         initView(context, attrs)
     }
 
-    protected open fun initView(context: Context, attrs: AttributeSet?) {
+    private fun initView(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
             val typeArray = context.obtainStyledAttributes(attrs, R.styleable.BaseCalligraphyView)
             gridLineWidth =

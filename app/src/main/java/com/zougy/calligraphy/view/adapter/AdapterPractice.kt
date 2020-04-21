@@ -1,9 +1,10 @@
 package com.zougy.calligraphy.view.adapter
 
+import android.util.Log
+import android.widget.TextView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.zougy.calligraphy.R
-import com.zougy.calligraphy.view.widget.CalligraphyViewLayout
 import com.zougy.calligraphy.view.widget.CalligraphyViewOneChar
 
 /**
@@ -16,9 +17,7 @@ class AdapterPractice(showString: MutableList<Char>) :
     BaseQuickAdapter<Char, BaseViewHolder>(R.layout.layout_calligraphy_list_view, showString) {
 
     override fun convert(holder: BaseViewHolder, item: Char) {
-        holder.getView<CalligraphyViewOneChar>(R.id.layoutCalligraphyTextView).postDelayed({
-            holder.getView<CalligraphyViewOneChar>(R.id.layoutCalligraphyTextView).setShowText(item.toString())
-        }, 10)
+        holder.getView<CalligraphyViewOneChar>(R.id.layoutCalligraphyTextView).setShowText(item.toString())
     }
 
 }
