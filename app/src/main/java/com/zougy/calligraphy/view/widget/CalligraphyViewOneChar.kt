@@ -12,17 +12,17 @@ import android.util.AttributeSet
  * Date:2020/4/20<br>
  * Email:441008824@qq.com
  */
-class CalligraphyViewOneChar : BaseCalligraphyView {
+open class CalligraphyViewOneChar : BaseCalligraphyView {
 
     /**
      * 屏幕宽度
      */
-    private var viewWidth = 0
+    var viewWidth = 0
 
     /**
      * 屏幕高度
      */
-    private var viewHeight = 0
+    var viewHeight = 0
 
     constructor(context: Context) : this(context, null)
 
@@ -75,7 +75,7 @@ class CalligraphyViewOneChar : BaseCalligraphyView {
     /**
      * 绘制一个字
      */
-    private fun drawOneText(c: Char, canvas: Canvas, rect: RectF) {
+    protected fun drawOneText(c: Char, canvas: Canvas, rect: RectF) {
 
         if (enableGrid) {
             //绘制背景框
