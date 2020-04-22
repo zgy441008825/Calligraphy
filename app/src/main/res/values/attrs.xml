@@ -5,7 +5,6 @@
         <attr name="android:textSize" />
         <attr name="android:textColor" />
         <attr name="android:padding" />
-        <attr name="android:layout_margin" />
 
         <attr name="gridLineWidth" format="dimension" />
         <attr name="gridSlashWidth" format="dimension" />
@@ -25,8 +24,14 @@
         <attr name="enableGridBackground" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="CalligraphyViewLayout">
+    <declare-styleable name="CalligraphyLayout">
         <attr name="gridHorSpace" format="dimension" />
         <attr name="gridVerSpace" format="dimension" />
+        <attr name="layoutType">
+            <enum name="NORMAL" value="0"/>
+            <enum name="SINGLE_LINE" value="1"/>
+            <enum name="VER_LEFT" value="2"/>
+            <enum name="VER_RIGHT" value="3"/>
+        </attr>
     </declare-styleable>
 </resources>

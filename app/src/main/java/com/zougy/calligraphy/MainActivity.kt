@@ -17,11 +17,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Log.d("MainActivity", "ZLog onCreate ")
-        acMainRecyclerView.adapter = AdapterPractice(getString(R.string.testString).toMutableList())
-        acMainRecyclerView.layoutManager = GridLayoutManager(this, 6)
-        acMainRecyclerView.addItemDecoration(RecyclerViewDecoration(offset = 30, drawColor = Color.BLUE))
-
         acMainBtStart.onClickOnSinge({
             val intent = Intent(this, PracticeActivity::class.java)
             intent.putExtra("text", getString(R.string.testString))

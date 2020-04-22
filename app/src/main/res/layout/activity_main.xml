@@ -100,11 +100,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/acMainViewTop" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.zougy.calligraphy.view.widget.CalligraphyLayout
         android:id="@+id/acMainRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/dp_10"
+        android:text="@string/testString"
+        android:textSize="@dimen/sp_20"
+        app:gridHorSpace="@dimen/dp_20"
+        app:gridVerSpace="@dimen/dp_10"
+        app:layoutType="NORMAL"
         app:layout_constraintBottom_toTopOf="@+id/acMainBtStart"
         app:layout_constraintTop_toBottomOf="@+id/acMainViewTask" />
 

@@ -57,11 +57,6 @@ abstract class BaseCalligraphyView : View {
     private var gridColor = Color.RED
 
     /**
-     * View距离左边的宽度
-     */
-    var margin = 0
-
-    /**
      * 显示的文本
      */
     var text = ""
@@ -101,7 +96,7 @@ abstract class BaseCalligraphyView : View {
         initView(context, attrs)
     }
 
-    private fun initView(context: Context, attrs: AttributeSet?) {
+    protected open fun initView(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
             val typeArray = context.obtainStyledAttributes(attrs, R.styleable.BaseCalligraphyView)
             gridLineWidth =
@@ -125,11 +120,6 @@ abstract class BaseCalligraphyView : View {
                 R.styleable.BaseCalligraphyView_android_padding,
                 0f
             ).toInt()
-            margin =
-                typeArray.getDimension(
-                    R.styleable.BaseCalligraphyView_android_layout_margin,
-                    0f
-                ).toInt()
             enableGrid = typeArray.getBoolean(R.styleable.BaseCalligraphyView_enableGridBackground, true)
             fontType = typeArray.getInt(R.styleable.BaseCalligraphyView_textFontType, 0)
 

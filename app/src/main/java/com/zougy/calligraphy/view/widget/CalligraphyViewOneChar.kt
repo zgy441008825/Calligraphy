@@ -17,12 +17,12 @@ open class CalligraphyViewOneChar : BaseCalligraphyView {
     /**
      * 屏幕宽度
      */
-    var viewWidth = 0
+    protected var viewWidth = 0
 
     /**
      * 屏幕高度
      */
-    var viewHeight = 0
+    protected var viewHeight = 0
 
     constructor(context: Context) : this(context, null)
 
@@ -58,7 +58,7 @@ open class CalligraphyViewOneChar : BaseCalligraphyView {
 //        Log.d("CalligraphyViewOneChar", "ZLog onMeasure wSize:$wSize wMode:$wMode hSize:$hSize hMode:$hMode")
 //    }
 //
-//    private fun getModeName(mode: Int): String {
+//    protected fun getModeName(mode: Int): String {
 //        return when (mode) {
 //            MeasureSpec.AT_MOST -> "AT_MOST"
 //            MeasureSpec.EXACTLY -> "EXACTLY"
