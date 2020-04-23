@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.RectF
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.util.Log
 
 /**
  * Description:<br>
@@ -76,7 +77,6 @@ open class CalligraphyViewOneChar : BaseCalligraphyView {
      * 绘制一个字
      */
     protected fun drawOneText(c: Char, canvas: Canvas, rect: RectF) {
-
         if (enableGrid) {
             //绘制背景框
             canvas.drawRect(rect, gridBorderPaint)

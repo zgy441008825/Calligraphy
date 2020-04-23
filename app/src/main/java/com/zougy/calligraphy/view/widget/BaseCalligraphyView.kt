@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import com.zougy.calligraphy.R
 import org.xutils.common.util.DensityUtil
@@ -38,7 +37,7 @@ abstract class BaseCalligraphyView : View {
     /**
      * 网格线的大小
      */
-    private var gridLineWidth = 2f
+    private var gridLineWidth = 4f
 
     /**
      * 斜线大小
@@ -54,7 +53,7 @@ abstract class BaseCalligraphyView : View {
     /**
      * 网格颜色
      */
-    private var gridColor = Color.RED
+    private var gridColor = Color.parseColor("#C93636")
 
     /**
      * 显示的文本
@@ -69,11 +68,7 @@ abstract class BaseCalligraphyView : View {
     /**
      * 字体大小
      */
-    var textSize = DensityUtil.dip2px(20f).toFloat()
-        set(value) {
-            field = value
-            invalidate()
-        }
+    private var textSize = DensityUtil.dip2px(20f).toFloat()
 
     /**
      * 字体距离边框的距离
@@ -100,28 +95,28 @@ abstract class BaseCalligraphyView : View {
         if (attrs != null) {
             val typeArray = context.obtainStyledAttributes(attrs, R.styleable.BaseCalligraphyView)
             gridLineWidth =
-                typeArray.getDimension(R.styleable.BaseCalligraphyView_gridLineWidth, 2f)
+                typeArray.getDimension(R.styleable.BaseCalligraphyView_gridLineWidth, gridLineWidth)
             gridSlashWidth =
-                typeArray.getDimension(R.styleable.BaseCalligraphyView_gridSlashWidth, 2f)
+                typeArray.getDimension(R.styleable.BaseCalligraphyView_gridSlashWidth, gridSlashWidth)
             gridBgStyle =
                 typeArray.getInt(
                     R.styleable.BaseCalligraphyView_gridBgStyle,
-                    GridBgStyle.MIZI
+                    gridBgStyle
                 )
-            gridColor = typeArray.getColor(R.styleable.BaseCalligraphyView_gridColor, Color.RED)
+            gridColor = typeArray.getColor(R.styleable.BaseCalligraphyView_gridColor, gridColor)
             text = typeArray.getString(R.styleable.BaseCalligraphyView_android_text).toString()
             textColor =
-                typeArray.getColor(R.styleable.BaseCalligraphyView_android_textColor, Color.BLACK)
+                typeArray.getColor(R.styleable.BaseCalligraphyView_android_textColor, textColor)
             textSize = typeArray.getDimension(
                 R.styleable.BaseCalligraphyView_android_textSize,
-                DensityUtil.dip2px(20f).toFloat()
+                textSize
             )
             textPadding = typeArray.getDimension(
                 R.styleable.BaseCalligraphyView_android_padding,
-                0f
+                textPadding.toFloat()
             ).toInt()
-            enableGrid = typeArray.getBoolean(R.styleable.BaseCalligraphyView_enableGridBackground, true)
-            fontType = typeArray.getInt(R.styleable.BaseCalligraphyView_textFontType, 0)
+            enableGrid = typeArray.getBoolean(R.styleable.BaseCalligraphyView_enableGridBackground, enableGrid)
+            fontType = typeArray.getInt(R.styleable.BaseCalligraphyView_textFontType, fontType)
 
             typeArray.recycle()
         }
@@ -134,7 +129,7 @@ abstract class BaseCalligraphyView : View {
         gridLinePaint.isAntiAlias = true
         gridLinePaint.strokeWidth = gridSlashWidth
         gridLinePaint.color = gridColor
-        gridLinePaint.pathEffect = DashPathEffect(floatArrayOf(10f, 10f), 40f)
+        gridLinePaint.pathEffect = DashPathEffect(floatArrayOf(5f, 5f), 20f)
         setLayerType(LAYER_TYPE_SOFTWARE, gridLinePaint)
 
         textPaint.isAntiAlias = true

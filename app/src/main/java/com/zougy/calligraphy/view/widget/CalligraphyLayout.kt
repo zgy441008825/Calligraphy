@@ -3,11 +3,12 @@ package com.zougy.calligraphy.view.widget
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.RectF
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
+import android.widget.Scroller
 import androidx.core.view.marginRight
 import androidx.core.view.marginStart
 import com.zougy.calligraphy.R
@@ -34,11 +35,7 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      * 布局模式
      * @see LayoutType
      */
-    var layoutType = NORMAL
-        set(value) {
-            field = value
-            invalidate()
-        }
+    private var layoutType = NORMAL
 
     /**
      * 每个字水平间距
@@ -57,6 +54,12 @@ class CalligraphyLayout : CalligraphyViewOneChar {
 
     private lateinit var bitmapCanvas: Canvas
 
+    /**
+     * 滑动控件
+     */
+    private lateinit var scroller: Scroller
+
+
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
@@ -72,15 +75,25 @@ class CalligraphyLayout : CalligraphyViewOneChar {
             layoutType = typeArray.getInt(R.styleable.CalligraphyLayout_layoutType, NORMAL)
             typeArray.recycle()
         }
-        Log.d("CalligraphyLayout", "ZLog initView $itemHorSpace  $itemVerSpace")
+        scroller = Scroller(context, null, true)
+    }
+
+    override fun computeScroll() {
+        super.computeScroll()
+//        Log.d("CalligraphyLayout", "ZLog computeScroll ${scroller.computeScrollOffset()}")
+//        Log.d("CalligraphyLayout", "ZLog computeScroll ${scroller.currX}  ${scroller.currY}")
+//        if (scroller.computeScrollOffset()) {
+//            scrollTo(scroller.currX, scrollY)
+//            invalidate()
+//        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         bitmapView = Bitmap.createBitmap(measureBitmapWidth(), measureBitmapHeight(), Bitmap.Config.ARGB_8888)
         bitmapCanvas = Canvas(bitmapView)
-        bitmapCanvas.drawColor(Color.YELLOW)
         Log.d("CalligraphyLayout", "ZLog onSizeChanged bitmapView:${bitmapView.width} ${bitmapView.height}")
+        Log.d("CalligraphyLayout", "ZLog onSizeChanged view:$viewWidth  $viewHeight")
         layoutText()
     }
 
@@ -106,7 +119,7 @@ class CalligraphyLayout : CalligraphyViewOneChar {
             }
             VER_LEFT,
             VER_RIGHT -> {
-                width = if (text.contentEquals("\n")) {
+                width = if (text.contains("\n")) {
                     val textArr = text.split("\n")
                     (oneTextSize + itemHorSpace) * textArr.size + marginStart + marginRight
                 } else {
@@ -135,9 +148,8 @@ class CalligraphyLayout : CalligraphyViewOneChar {
             NORMAL -> {
                 //一行显示多少个字
                 val textRowCnt = if ((viewWidth % oneTextSize) != 0) viewWidth / oneTextSize - 1 else viewWidth / oneTextSize
-                Log.d("CalligraphyLayout", "ZLog measureBitmapHeight textRowCnt:$textRowCnt  viewWidth:$viewWidth  oneTextW:$oneTextSize")
                 val columns =
-                    if (text.contentEquals("\n")) {
+                    if (text.contains("\n")) {
                         val textArr = text.split("\n")
                         var colCnt = 0
                         textArr.filter { it.length > textRowCnt }.forEach {
@@ -147,7 +159,6 @@ class CalligraphyLayout : CalligraphyViewOneChar {
                     } else {//如果不包含手动换行，则直接计算有多少行
                         if (text.length % textRowCnt != 0) text.length / textRowCnt + 1 else text.length / textRowCnt
                     }
-                Log.d("CalligraphyLayout", "ZLog measureBitmapHeight columns:$columns oneTextH:$oneTextSize text:${text.length}")
                 height = columns * oneTextSize
             }
             SINGLE_LINE -> {
@@ -155,7 +166,7 @@ class CalligraphyLayout : CalligraphyViewOneChar {
             }
             VER_LEFT,
             VER_RIGHT -> {
-                height = if (text.contentEquals("\n")) {
+                height = if (text.contains("\n")) {
                     val maxLen = text.split("\n").maxBy { it.length }!!.length
                     maxLen * oneTextSize
                 } else {
@@ -185,8 +196,8 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      * 其大小包含了左右padding和边框线的宽度
      */
     private fun getOneTextSize(): Int {
-        val oneTextW = (textPaint.measureText(text[0].toString()) + textPadding * 2 + textPaint.strokeWidth * 2).toInt()
-        val oneTextH = ((textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2 + textPaint.strokeWidth * 2).toInt()
+        val oneTextW = (textPaint.measureText(text[0].toString()) + textPadding * 2 + gridBorderPaint.strokeWidth * 2).toInt()
+        val oneTextH = ((textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2 + gridBorderPaint.strokeWidth * 2).toInt()
         return oneTextH.coerceAtLeast(oneTextW)
     }
 
@@ -195,15 +206,40 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      */
     private fun drawNormal() {
         val oneTextSize = getOneTextSize()
-        if (text.contentEquals("\n")){
+        val rectF = RectF(0f, 0f, 0f, 0f)
+        var rowCnt = 0
+        if (text.contains("\n")) {
             val textArrays = text.split("\n")
-            val rectF = RectF()
-            var rowCnt = 0
             textArrays.forEach {
-                Log.d("CalligraphyLayout", "ZLog drawNormal one line string $it")
-                for (i in 0 until it.length){
-
+                var index = 0//记录当前行绘制到第几列
+                for (i in it.indices) {
+                    rectF.left = index * (oneTextSize + itemHorSpace) + gridBorderPaint.strokeWidth
+                    rectF.right = rectF.left + oneTextSize + gridBorderPaint.strokeWidth
+                    if (rectF.right > viewWidth) {//换行
+                        index = 0
+                        rowCnt++
+                        rectF.left = gridBorderPaint.strokeWidth
+                        rectF.right = rectF.left + oneTextSize + gridBorderPaint.strokeWidth
+                    }
+                    rectF.top = rowCnt * (oneTextSize + itemVerSpace) + gridBorderPaint.strokeWidth
+                    rectF.bottom = rectF.top + oneTextSize + gridBorderPaint.strokeWidth
+                    drawOneText(it[i], bitmapCanvas, rectF)
+                    index++
                 }
+                rowCnt++
+            }
+        } else {
+            for (i in text.indices) {
+                rectF.left = (i * oneTextSize + itemHorSpace).toFloat()
+                rectF.right = rectF.left + oneTextSize
+                if (rectF.right > viewWidth) {
+                    rowCnt++
+                    rectF.left = 0f
+                    rectF.right = rectF.left + oneTextSize
+                }
+                rectF.top = (rowCnt * (oneTextSize + itemVerSpace)).toFloat()
+                rectF.bottom = rectF.top + oneTextSize
+                drawOneText(text[i], bitmapCanvas, rectF)
             }
         }
     }
@@ -226,6 +262,58 @@ class CalligraphyLayout : CalligraphyViewOneChar {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawBitmap(bitmapView, 0f, 0f, gridLinePaint)
+    }
+
+    private var touchPointX = 0
+    private var touchPointY = 0
+    private var moveXCnt = 0
+    private var moveYCnt = 0
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (bitmapView.width <= viewWidth && bitmapView.height <= viewHeight) return true
+        event?.let {
+            when (it.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    touchPointX = it.x.toInt()
+                    touchPointY = it.y.toInt()
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val x = it.x.toInt()
+                    val y = it.y.toInt()
+                    var moveX = touchPointX - x
+                    var moveY = touchPointY - y
+                    moveXCnt += moveX
+                    moveYCnt += moveY
+                    val xCannotMove = moveXCnt < 0 || moveXCnt > bitmapView.width - viewWidth
+                    val yCannotMove = moveYCnt < 0 || moveYCnt > bitmapView.height - viewHeight
+                    Log.d("CalligraphyLayout", "ZLog onTouchEvent moveX:$moveX  moveY:$moveY moveYCnt:$moveYCnt  yCannotMove:$yCannotMove")
+                    if (bitmapView.width > viewWidth && bitmapView.height <= viewHeight) {//水平滑动
+                        if (xCannotMove) {
+                            moveXCnt -= moveX
+                            return true
+                        }
+                        moveY = 0
+                    } else if (bitmapView.height > viewHeight && bitmapView.width <= viewWidth) {//垂直滑动
+                        if (yCannotMove) {
+                            moveYCnt -= moveY
+                            return true
+                        }
+                        moveX = 0
+                    } else if (bitmapView.width > viewWidth && bitmapView.height > viewHeight) {
+                        if (xCannotMove && yCannotMove) {
+                            moveXCnt -= moveX
+                            moveYCnt -= moveY
+                            return true
+                        }
+                    }
+                    scrollBy(moveX, moveY)
+                    scroller.startScroll(scroller.currX, scroller.currY, moveX, moveY)
+                    touchPointX = x
+                    touchPointY = y
+                }
+            }
+        }
+        return true
     }
 
     /**
