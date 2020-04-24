@@ -16,12 +16,9 @@ class PracticeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_practice)
         val showStrings = intent.getStringExtra("text")
         if (showStrings == null || showStrings.isEmpty()) return
-        acPracticeRecyclerView.adapter = AdapterPractice(showStrings.toMutableList())
-        acPracticeRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        acPracticeCalligraphyLayout.setShowText(showStrings)
         acPracticeCalligraphyView.postDelayed({
             acPracticeCalligraphyView.setShowText(showStrings[0].toString())
         }, 1)
-        acPracticeRecyclerView.addItemDecoration(RecyclerViewDecoration(offset = 30, drawColor = Color.BLUE))
     }
 }

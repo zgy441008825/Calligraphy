@@ -59,41 +59,49 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      */
     private lateinit var scroller: Scroller
 
-
     constructor(context: Context) : this(context, null)
 
     constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
 
-    constructor(context: Context, attributeSet: AttributeSet?, defStyle: Int) : super(context, attributeSet, defStyle)
+    constructor(context: Context, attributeSet: AttributeSet?, defStyle: Int) : super(
+        context,
+        attributeSet,
+        defStyle
+    )
 
     override fun initView(context: Context, attrs: AttributeSet?) {
         super.initView(context, attrs)
         if (attrs != null) {
             val typeArray = context.obtainStyledAttributes(attrs, R.styleable.CalligraphyLayout)
-            itemHorSpace = typeArray.getDimension(R.styleable.CalligraphyLayout_gridHorSpace, 0f).toInt()
-            itemVerSpace = typeArray.getDimension(R.styleable.CalligraphyLayout_gridVerSpace, 0f).toInt()
+            itemHorSpace =
+                typeArray.getDimension(R.styleable.CalligraphyLayout_gridHorSpace, 0f).toInt()
+            itemVerSpace =
+                typeArray.getDimension(R.styleable.CalligraphyLayout_gridVerSpace, 0f).toInt()
             layoutType = typeArray.getInt(R.styleable.CalligraphyLayout_layoutType, NORMAL)
             typeArray.recycle()
         }
         scroller = Scroller(context, null, true)
     }
 
-    override fun computeScroll() {
-        super.computeScroll()
-//        Log.d("CalligraphyLayout", "ZLog computeScroll ${scroller.computeScrollOffset()}")
-//        Log.d("CalligraphyLayout", "ZLog computeScroll ${scroller.currX}  ${scroller.currY}")
-//        if (scroller.computeScrollOffset()) {
-//            scrollTo(scroller.currX, scrollY)
-//            invalidate()
-//        }
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        Log.d("CalligraphyLayout", "ZLog onSizeChanged w:$w h:$h")
+        super.onSizeChanged(w, h, oldw, oldh)
+        if (TextUtils.isEmpty(text) || w == 0 || h == 0) return
+        setBitmap()
     }
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        bitmapView = Bitmap.createBitmap(measureBitmapWidth(), measureBitmapHeight(), Bitmap.Config.ARGB_8888)
+    override fun setShowText(text: String) {
+        this.text = text
+        setBitmap()
+    }
+
+    private fun setBitmap() {
+        val bitmapW = measureBitmapWidth()
+        if (bitmapW == 0) return
+        val bitmapH = measureBitmapHeight()
+        if (bitmapH == 0) return
+        bitmapView = Bitmap.createBitmap(bitmapW, bitmapH, Bitmap.Config.ARGB_8888)
         bitmapCanvas = Canvas(bitmapView)
-        Log.d("CalligraphyLayout", "ZLog onSizeChanged bitmapView:${bitmapView.width} ${bitmapView.height}")
-        Log.d("CalligraphyLayout", "ZLog onSizeChanged view:$viewWidth  $viewHeight")
         layoutText()
     }
 
@@ -107,7 +115,7 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      * 如果是垂直布局，如果有手动设置\n字符串分割，则根据\n来判断有多少列，宽度为列*每个字的宽度。如果没有设置则宽度为view的宽度。
      */
     private fun measureBitmapWidth(): Int {
-        if (TextUtils.isEmpty(text)) return viewWidth
+        if (TextUtils.isEmpty(text) || viewWidth == 0) return viewWidth
         var width = viewWidth
         val oneTextSize = getOneTextSize()
         when (layoutType) {
@@ -115,7 +123,8 @@ class CalligraphyLayout : CalligraphyViewOneChar {
                 width = viewWidth
             }
             SINGLE_LINE -> {
-                width = (oneTextSize + itemHorSpace) * text.length + marginStart + marginRight
+                width =
+                    (oneTextSize + itemHorSpace) * text.length - itemHorSpace + marginStart + marginRight
             }
             VER_LEFT,
             VER_RIGHT -> {
@@ -123,7 +132,8 @@ class CalligraphyLayout : CalligraphyViewOneChar {
                     val textArr = text.split("\n")
                     (oneTextSize + itemHorSpace) * textArr.size + marginStart + marginRight
                 } else {
-                    val rowCnt = if (viewHeight % oneTextSize == 0) viewHeight / oneTextSize else viewHeight / oneTextSize - 1
+                    val rowCnt =
+                        if (viewHeight % oneTextSize == 0) viewHeight / oneTextSize else viewHeight / oneTextSize - 1
                     (oneTextSize + itemHorSpace) * rowCnt + marginStart + marginRight
                 }
             }
@@ -141,13 +151,14 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      * 垂直模式：如果有\n则需要分组，获取最大长度的一组。没有\n直接返回View的高度
      */
     private fun measureBitmapHeight(): Int {
-        if (TextUtils.isEmpty(text)) return viewHeight
+        if (TextUtils.isEmpty(text) || viewHeight == 0) return viewHeight
         var height = viewHeight
         val oneTextSize = getOneTextSize()
         when (layoutType) {
             NORMAL -> {
                 //一行显示多少个字
-                val textRowCnt = if ((viewWidth % oneTextSize) != 0) viewWidth / oneTextSize - 1 else viewWidth / oneTextSize
+                val textRowCnt =
+                    if ((viewWidth % oneTextSize) != 0) viewWidth / oneTextSize - 1 else viewWidth / oneTextSize
                 val columns =
                     if (text.contains("\n")) {
                         var colCnt = 0
@@ -198,9 +209,16 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      * 其大小包含了padding和边框线的宽度
      */
     private fun getOneTextSize(): Int {
-        val oneTextW = (textPaint.measureText(text[0].toString()) + (textPadding + gridBorderPaint.strokeWidth) * 2).toInt()
-        val oneTextH = ((textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + (textPadding + gridBorderPaint.strokeWidth) * 2).toInt()
+        val oneTextW =
+            (textPaint.measureText(text[0].toString()) + (textPadding + gridBorderPaint.strokeWidth) * 2).toInt()
+        val oneTextH =
+            ((textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + (textPadding + gridBorderPaint.strokeWidth) * 2).toInt()
         return oneTextH.coerceAtLeast(oneTextW)
+    }
+
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+        canvas?.drawBitmap(bitmapView, 0f, 0f, gridLinePaint)
     }
 
     /**
@@ -245,20 +263,6 @@ class CalligraphyLayout : CalligraphyViewOneChar {
                 drawOneText(it, bitmapCanvas, rectF)
                 index++
             }
-            /*for (i in text.indices) {
-                rectF.left = index * (oneTextSize + itemHorSpace) + gridBorderPaint.strokeWidth
-                rectF.right = rectF.left + oneTextSize + gridBorderPaint.strokeWidth
-                if (rectF.right > viewWidth) {//换行
-                    index = 0
-                    rowCnt++
-                    rectF.left = gridBorderPaint.strokeWidth
-                    rectF.right = rectF.left + oneTextSize + gridBorderPaint.strokeWidth
-                }
-                rectF.top = rowCnt * (oneTextSize + itemVerSpace) + gridBorderPaint.strokeWidth
-                rectF.bottom = rectF.top + oneTextSize + gridBorderPaint.strokeWidth
-                drawOneText(text[i], bitmapCanvas, rectF)
-                index++
-            }*/
         }
         bitmapCanvas.drawText("test", 10f, bitmapView.height - 20f, textPaint)
     }
@@ -267,7 +271,15 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      * 绘制单行模式
      */
     private fun drawSingleLine() {
-
+        val rectF = RectF()
+        val oneTextSize = getOneTextSize()
+        for (i in text.indices) {
+            rectF.left = (i * (oneTextSize + itemHorSpace)).toFloat()
+            rectF.right = rectF.left + oneTextSize
+            rectF.top = itemVerSpace.toFloat()
+            rectF.bottom = rectF.top + oneTextSize
+            drawOneText(text[i], bitmapCanvas, rectF)
+        }
     }
 
     /**
@@ -276,11 +288,6 @@ class CalligraphyLayout : CalligraphyViewOneChar {
      */
     private fun drawVerMode(left: Boolean) {
 
-    }
-
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        canvas?.drawBitmap(bitmapView, 0f, 0f, gridLinePaint)
     }
 
     private var touchPointX = 0

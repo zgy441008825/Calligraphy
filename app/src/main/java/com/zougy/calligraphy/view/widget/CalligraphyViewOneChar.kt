@@ -68,7 +68,7 @@ open class CalligraphyViewOneChar : BaseCalligraphyView {
 //        }
 //    }
 
-    fun setShowText(text: String) {
+    open fun setShowText(text: String) {
         this.text = text
         invalidate()
     }

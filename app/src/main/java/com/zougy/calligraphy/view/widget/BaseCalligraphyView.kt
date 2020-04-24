@@ -87,7 +87,11 @@ abstract class BaseCalligraphyView : View {
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initView(context, attrs)
     }
 
@@ -97,7 +101,10 @@ abstract class BaseCalligraphyView : View {
             gridLineWidth =
                 typeArray.getDimension(R.styleable.BaseCalligraphyView_gridLineWidth, gridLineWidth)
             gridSlashWidth =
-                typeArray.getDimension(R.styleable.BaseCalligraphyView_gridSlashWidth, gridSlashWidth)
+                typeArray.getDimension(
+                    R.styleable.BaseCalligraphyView_gridSlashWidth,
+                    gridSlashWidth
+                )
             gridBgStyle =
                 typeArray.getInt(
                     R.styleable.BaseCalligraphyView_gridBgStyle,
@@ -115,7 +122,10 @@ abstract class BaseCalligraphyView : View {
                 R.styleable.BaseCalligraphyView_android_padding,
                 textPadding.toFloat()
             ).toInt()
-            enableGrid = typeArray.getBoolean(R.styleable.BaseCalligraphyView_enableGridBackground, enableGrid)
+            enableGrid = typeArray.getBoolean(
+                R.styleable.BaseCalligraphyView_enableGridBackground,
+                enableGrid
+            )
             fontType = typeArray.getInt(R.styleable.BaseCalligraphyView_textFontType, fontType)
 
             typeArray.recycle()
@@ -135,7 +145,8 @@ abstract class BaseCalligraphyView : View {
         textPaint.isAntiAlias = true
         textPaint.textSize = textSize
         textPaint.color = textColor
-        textPaint.typeface = Typeface.createFromAsset(context.assets, GridBgStyle.fontTypes[fontType])
+        textPaint.typeface =
+            Typeface.createFromAsset(context.assets, GridBgStyle.fontTypes[fontType])
     }
 
 
