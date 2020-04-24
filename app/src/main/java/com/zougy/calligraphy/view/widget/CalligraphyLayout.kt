@@ -150,25 +150,27 @@ class CalligraphyLayout : CalligraphyViewOneChar {
                 val textRowCnt = if ((viewWidth % oneTextSize) != 0) viewWidth / oneTextSize - 1 else viewWidth / oneTextSize
                 val columns =
                     if (text.contains("\n")) {
-                        val textArr = text.split("\n")
                         var colCnt = 0
-                        textArr.filter { it.length > textRowCnt }.forEach {
-                            colCnt += if (it.length % textRowCnt == 0) it.length / textRowCnt else it.length % textRowCnt + 1
+                        text.split("\n").forEach {
+                            if (it.length > textRowCnt)
+                                colCnt += if (it.length % textRowCnt == 0) it.length / textRowCnt else it.length / textRowCnt + 1
+                            else
+                                colCnt++
                         }
-                        textArr.size + colCnt
+                        colCnt
                     } else {//如果不包含手动换行，则直接计算有多少行
                         if (text.length % textRowCnt != 0) text.length / textRowCnt + 1 else text.length / textRowCnt
                     }
-                height = columns * oneTextSize
+                height = columns * (oneTextSize + itemVerSpace) - itemVerSpace
             }
             SINGLE_LINE -> {
-                height = oneTextSize
+                height = oneTextSize + itemVerSpace * 2
             }
             VER_LEFT,
             VER_RIGHT -> {
                 height = if (text.contains("\n")) {
                     val maxLen = text.split("\n").maxBy { it.length }!!.length
-                    maxLen * oneTextSize
+                    maxLen * (oneTextSize + itemVerSpace)
                 } else {
                     viewHeight
                 }
@@ -193,11 +195,11 @@ class CalligraphyLayout : CalligraphyViewOneChar {
     /**
      * 获取一个字占用空间的大小，取宽高的最大值。
      *
-     * 其大小包含了左右padding和边框线的宽度
+     * 其大小包含了padding和边框线的宽度
      */
     private fun getOneTextSize(): Int {
-        val oneTextW = (textPaint.measureText(text[0].toString()) + textPadding * 2 + gridBorderPaint.strokeWidth * 2).toInt()
-        val oneTextH = ((textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + textPadding * 2 + gridBorderPaint.strokeWidth * 2).toInt()
+        val oneTextW = (textPaint.measureText(text[0].toString()) + (textPadding + gridBorderPaint.strokeWidth) * 2).toInt()
+        val oneTextH = ((textPaint.fontMetrics.bottom - textPaint.fontMetrics.top) + (textPadding + gridBorderPaint.strokeWidth) * 2).toInt()
         return oneTextH.coerceAtLeast(oneTextW)
     }
 
@@ -207,41 +209,58 @@ class CalligraphyLayout : CalligraphyViewOneChar {
     private fun drawNormal() {
         val oneTextSize = getOneTextSize()
         val rectF = RectF(0f, 0f, 0f, 0f)
-        var rowCnt = 0
+        var rowCnt = 0//当前第几行
         if (text.contains("\n")) {
-            val textArrays = text.split("\n")
-            textArrays.forEach {
+            text.split("\n").forEach { it ->
                 var index = 0//记录当前行绘制到第几列
-                for (i in it.indices) {
-                    rectF.left = index * (oneTextSize + itemHorSpace) + gridBorderPaint.strokeWidth
-                    rectF.right = rectF.left + oneTextSize + gridBorderPaint.strokeWidth
+                it.forEach {
+                    rectF.left = (index * (oneTextSize + itemHorSpace)).toFloat()
+                    rectF.right = rectF.left + oneTextSize
                     if (rectF.right > viewWidth) {//换行
                         index = 0
                         rowCnt++
-                        rectF.left = gridBorderPaint.strokeWidth
-                        rectF.right = rectF.left + oneTextSize + gridBorderPaint.strokeWidth
+                        rectF.left = 0f
+                        rectF.right = rectF.left + oneTextSize
                     }
-                    rectF.top = rowCnt * (oneTextSize + itemVerSpace) + gridBorderPaint.strokeWidth
-                    rectF.bottom = rectF.top + oneTextSize + gridBorderPaint.strokeWidth
-                    drawOneText(it[i], bitmapCanvas, rectF)
+                    rectF.top = (rowCnt * (oneTextSize + itemVerSpace)).toFloat()
+                    rectF.bottom = rectF.top + oneTextSize
+                    drawOneText(it, bitmapCanvas, rectF)
                     index++
                 }
                 rowCnt++
             }
         } else {
-            for (i in text.indices) {
-                rectF.left = (i * oneTextSize + itemHorSpace).toFloat()
+            var index = 0//记录当前行绘制到第几列
+            text.forEach {
+                rectF.left = (index * (oneTextSize + itemHorSpace)).toFloat()
                 rectF.right = rectF.left + oneTextSize
-                if (rectF.right > viewWidth) {
+                if (rectF.right > viewWidth) {//换行
+                    index = 0
                     rowCnt++
                     rectF.left = 0f
                     rectF.right = rectF.left + oneTextSize
                 }
                 rectF.top = (rowCnt * (oneTextSize + itemVerSpace)).toFloat()
                 rectF.bottom = rectF.top + oneTextSize
-                drawOneText(text[i], bitmapCanvas, rectF)
+                drawOneText(it, bitmapCanvas, rectF)
+                index++
             }
+            /*for (i in text.indices) {
+                rectF.left = index * (oneTextSize + itemHorSpace) + gridBorderPaint.strokeWidth
+                rectF.right = rectF.left + oneTextSize + gridBorderPaint.strokeWidth
+                if (rectF.right > viewWidth) {//换行
+                    index = 0
+                    rowCnt++
+                    rectF.left = gridBorderPaint.strokeWidth
+                    rectF.right = rectF.left + oneTextSize + gridBorderPaint.strokeWidth
+                }
+                rectF.top = rowCnt * (oneTextSize + itemVerSpace) + gridBorderPaint.strokeWidth
+                rectF.bottom = rectF.top + oneTextSize + gridBorderPaint.strokeWidth
+                drawOneText(text[i], bitmapCanvas, rectF)
+                index++
+            }*/
         }
+        bitmapCanvas.drawText("test", 10f, bitmapView.height - 20f, textPaint)
     }
 
     /**
@@ -284,9 +303,8 @@ class CalligraphyLayout : CalligraphyViewOneChar {
                     var moveY = touchPointY - y
                     moveXCnt += moveX
                     moveYCnt += moveY
-                    val xCannotMove = moveXCnt < 0 || moveXCnt > bitmapView.width - viewWidth
-                    val yCannotMove = moveYCnt < 0 || moveYCnt > bitmapView.height - viewHeight
-                    Log.d("CalligraphyLayout", "ZLog onTouchEvent moveX:$moveX  moveY:$moveY moveYCnt:$moveYCnt  yCannotMove:$yCannotMove")
+                    val xCannotMove = moveXCnt < 0 || moveXCnt > (bitmapView.width - viewWidth)
+                    val yCannotMove = moveYCnt < 0 || moveYCnt > (bitmapView.height - viewHeight)
                     if (bitmapView.width > viewWidth && bitmapView.height <= viewHeight) {//水平滑动
                         if (xCannotMove) {
                             moveXCnt -= moveX
